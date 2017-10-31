@@ -28,6 +28,8 @@ namespace OdeToFood
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddMvc();
             services.AddSingleton<IGreeter, Greeter>();
             services.AddSingleton(Configuration); //looks like we don't need to call this line at all, as other wise this should be added before IGreeter service is added
         }
@@ -39,16 +41,29 @@ namespace OdeToFood
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseWelcomePage("/welcome");
-
-            app.Run(async (context) =>
+            else
             {
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
 
-              //  throw new Exception("wrong here");
-                var message = greeter.GetGreeting();//Configuration["Greeting"];
-            await context.Response.WriteAsync(message);
-            });
+                    ExceptionHandler = context => context.Response.WriteAsync("Oops")
+                });
+            }
+            //app.UseDefaultFiles();
+            //app.UseStaticFiles();
+            app.UseFileServer();
+
+            //app.UseWelcomePage("/welcome");
+
+            //app.Run(async (context) =>
+            //{
+
+            //    //throw new Exception("wrong here");
+            //    var message = greeter.GetGreeting();//Configuration["Greeting"];
+            //await context.Response.WriteAsync(message);
+            //});
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
