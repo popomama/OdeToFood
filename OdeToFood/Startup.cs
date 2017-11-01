@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Routing;
+using OdeToFood.Services;
 
 namespace OdeToFood
 {
@@ -32,6 +34,7 @@ namespace OdeToFood
             services.AddMvc();
             services.AddSingleton<IGreeter, Greeter>();
             services.AddSingleton(Configuration); //looks like we don't need to call this line at all, as other wise this should be added before IGreeter service is added
+            services.AddScoped<IRestaurantData, InMemoryRestaurantData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +66,15 @@ namespace OdeToFood
             //await context.Response.WriteAsync(message);
             //});
 
-            app.UseMvcWithDefaultRoute();
+            //app.UseMvcWithDefaultRoute();
+            app.UseMvc(configureRoutes);
+            app.Run(ctx => ctx.Response.WriteAsync("Not found"));
+        }
+
+        private void configureRoutes(IRouteBuilder routeBuilder)
+        {
+            // /Home/Index/
+            routeBuilder.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
         }
     }
 }
