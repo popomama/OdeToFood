@@ -1,8 +1,7 @@
-﻿using OdeToFood.Models;
+﻿using OdeToFood.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace OdeToFood.Services
 {
@@ -10,6 +9,7 @@ namespace OdeToFood.Services
     public interface IRestaurantData
     {
         IEnumerable<Restaurant> GetAll();
+        Restaurant Get(int id);
     }
     public class InMemoryRestaurantData : IRestaurantData
     {
@@ -23,6 +23,11 @@ namespace OdeToFood.Services
                 new Restaurant{Id =2,Name="The House of Good 2"},
                 new Restaurant{Id =3,Name="The House of Good 3"}
             };
+        }
+
+        public Restaurant Get(int id)
+        {
+            return restaurants.FirstOrDefault(r => r.Id == id);
         }
 
         public IEnumerable<Restaurant> GetAll()
